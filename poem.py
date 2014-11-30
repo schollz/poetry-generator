@@ -1,4 +1,5 @@
 from random import randint
+import sys
 #import language_check
 
 class bnfDictionary:
@@ -82,8 +83,9 @@ class bnfDictionary:
 			return newPoem
 		
 bnf = bnfDictionary('poems.bnf')
-
-print(bnf.generatePretty('<poem>'))
-print(bnf.generatePretty('<mushypoem>'))
+if "mushy" in sys.argv[1]:
+	print(bnf.generatePretty('<mushypoem>'))
+else:
+	print(bnf.generatePretty('<poem>'))
 
 
