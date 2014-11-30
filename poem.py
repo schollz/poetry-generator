@@ -1,5 +1,6 @@
 from random import randint
 import sys
+import datetime
 #import language_check
 
 class bnfDictionary:
@@ -49,7 +50,9 @@ class bnfDictionary:
 				line = line.capitalize()
 				capitalize = False
 			if isTitle:
-				newPoem = newPoem + "<h1>" + line + "</h1>\n<h2>by A Computer, timestamp</h2>\n"
+				mydate = datetime.datetime.now()
+				
+				newPoem = newPoem + "<h1>" + line + "</h1>\n<h2>by A Computer, %s</h2>\n"%mydate.strftime("%B %d %Y")
 				isTitle = False
 			else:
 				if len(line) < 1:	
