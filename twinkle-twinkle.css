@@ -1,0 +1,68 @@
+body {
+	background: #FFF;
+	color: #111;
+	font: 18px Baskerville, "Palatino Linotype", "Times New Roman", Times, serif;
+	text-align: center;
+	}
+	
+	div, h1, h2, p {
+		margin: 0;
+		padding: 0;
+		}
+	
+		#poem { 
+			margin: auto;
+			padding: 20px 0;
+			text-align: left;
+			width: 550px;
+			}
+		
+			h1, h2 {
+				font-weight: normal;
+				text-align: center;
+				}
+				
+			h1 {
+				font-size: 34px;
+				line-height: 1.2;
+				margin-bottom: 10px;
+				}
+			
+			h2 {
+				color: #666;
+				font-size: 18px;
+				font-style: italic;
+				margin-bottom: 30px;
+				}
+				
+			p {
+				line-height: 1.5;
+				margin-bottom: 15px;
+				}
+			
+			/* The magic of selectors begins... */
+			
+			h2:before {
+				content: '- ';
+				}
+			
+			h2:after {
+				content: ' -';
+				}
+			
+			#poem h2 + p:first-letter {
+					float: left;
+					font-size: 38px;
+					line-height: 1;
+					margin: 2px 5px 0 0;
+				}
+				
+			#poem p:first-line {
+				font-variant: small-caps;
+				letter-spacing: 1px;
+				}
+			
+			#poem p:last-child {
+				margin-bottom: 30px;
+				padding-bottom: 30px;
+				}

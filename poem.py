@@ -31,57 +31,78 @@ class bnfDictionary:
 	def generatePretty(self,key):
 		#tool = language_check.LanguageTool('en-US')
 		poem = self.generate(key,1)
-		capitalize = False
+		capitalize = True
+		isTitle = True
+		isParagraph = False
 		newPoem = ""
-		firstLine = True
-		lastLineWasText = False
-		lastLineWasFirst = False
-		for line in poem.splitlines():
-			line = line.rstrip()
+		lines = poem.splitlines()
+		lines.append('\n')
+		for line in lines:
+			line = line.rstrip().lstrip()
 			line = line.replace(' ,',',')
-			line = line.replace(' !','!')
 			line = line.replace(' ?','?')
-			line = line.replace(' i ',' I ')
+			line = line.replace(' !','!')
+			line = line.replace(' .','.')
+			line = line.replace(' :',':')
 			line = line.replace(' \'','\'')
-			#matches = tool.check(line)
-			#print(language_check.correct(line, matches))
-			if len(line)>1:
-				if " " in line[0]:
-					line = line[1:]
-				if capitalize:
-					capitalize = False
-					line = line.capitalize()
-				if not firstLine and "." not in line[-1] and "-" not in line[-1] and "!" not in line[-1] and "," not in line[-1] and "?" not in line[-1]:
-					if randint(0,9) < 3 and "the" not in line[-3:]:
-						line = line + "."
-						capitalize = True
-				else:
-					capitalize = True
-				if firstLine:
-					line = "<h2>" + line + "</h2>"
-					firstLine = False
-					lastLineWasFirst = True
-					newPoem = newPoem + line
-				else:	
-					newPoem = newPoem + "<br>" + line
-				lastLineWasText = True
+			if capitalize:
+				line = line.capitalize()
+				capitalize = False
+			if isTitle:
+				newPoem = newPoem + "<h1>" + line + "</h1>\n<h2>by A Computer, timestamp</h2>\n"
+				isTitle = False
 			else:
-				if lastLineWasText and not lastLineWasFirst and "!" not in newPoem[-1] and "-" not in newPoem[-1] and "." not in newPoem[-1] and "," not in newPoem[-1] and "?" not in newPoem[-1]:
-					newPoem = newPoem + ".<br>" + line
-					capitalize = True
-					lastLineWasText = False
+				if len(line) < 1:	
+					if isParagraph:
+						newPoem = newPoem + "</p>"
+					isParagraph = False
 				else:
-					if lastLineWasFirst:
-						newPoem = newPoem + line
-					else:
-						newPoem = newPoem + "<br>" + line
+					if not isParagraph:
+						newPoem = newPoem + "\n\n<p>"
+						line = line.capitalize()
+					isParagraph = True
+					newPoem = newPoem + line + "<break>"
+				if "." in line or "!" in line or "?" in line or "!" in line:
 					capitalize = True
-					lastLineWasFirst = False
-		if "!" not in newPoem[-1] and "-" not in newPoem[-1] and "." not in newPoem[-1] and "," not in newPoem[-1] and "?" not in newPoem[-1]:
-			return newPoem + "."
-		else:
-			return newPoem
-		
+		newPoem = newPoem.replace('<break><break>','<break>')
+		newPoem = newPoem.replace('<break></p>','</p>')
+		newPoem = newPoem.replace('<break>','<br />\n')
+		lines = newPoem.splitlines()
+		newPoem = ""
+		isParagraph = False
+		capitalize = False
+		for line in lines:
+			if capitalize:
+				line = line.capitalize()
+				capitalize = False
+			if "<p>" in line:
+				isParagraph = True
+			if "</p>" in line:
+				isParagraph = False
+				lastChar = line.rsplit('</p>',1)[0][-1]
+				if "." in lastChar or "-" in lastChar  or "," in lastChar or "!" in lastChar or "?" in lastChar or "!" in lastChar:
+					pass
+				else:
+					newPoem = newPoem + line.replace('</p>','.</p>\n')
+			else:
+				if isParagraph:
+					lastChar = line.rsplit('<br />',1)[0][-1]
+					if "." in lastChar or "-" in lastChar or "," in lastChar or "!" in lastChar or "?" in lastChar or "!" in lastChar:
+						pass
+					else:
+						if randint(0,10)<4:
+							newPoem = newPoem + line.replace('<br />','.<br />\n')
+							capitalize = True
+						else:
+							newPoem = newPoem + line + "\n"				
+				else:
+					newPoem = newPoem + line + "\n"
+		newPoem = newPoem.replace('..','.')
+		newPoem = newPoem.replace('?.','!')
+		newPoem = newPoem.replace('!.','?')
+		newPoem = newPoem.replace(' i ',' I ')
+		return newPoem
+	
 bnf = bnfDictionary('poems.bnf')
 if "mushy" in sys.argv[1]:
 	print(bnf.generatePretty('<mushypoem>'))
