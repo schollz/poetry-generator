@@ -94,9 +94,17 @@ class bnfDictionary:
 					if "." in lastChar or "-" in lastChar or "," in lastChar or "!" in lastChar or "?" in lastChar or "!" in lastChar:
 						pass
 					else:
-						if randint(0,10)<4:
+						if randint(0,20)<2:
+							newPoem = newPoem + line.replace('<br />','?<br />\n')
+							capitalize = True
+						elif randint(0,20)<2:
 							newPoem = newPoem + line.replace('<br />','.<br />\n')
 							capitalize = True
+						elif randint(0,20)<2:
+							newPoem = newPoem + line.replace('<br />','!<br />\n')
+							capitalize = True
+						elif randint(0,20)<2:
+							newPoem = newPoem + line.replace('<br />',',<br />\n')
 						else:
 							newPoem = newPoem + line + "\n"				
 				else:
