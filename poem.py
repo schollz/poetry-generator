@@ -78,15 +78,16 @@ class bnfDictionary:
 			if capitalize:
 				line = line.capitalize()
 				capitalize = False
-			if "<p>" in line:
-				isParagraph = True
 			if "</p>" in line:
 				isParagraph = False
 				lastChar = line.rsplit('</p>',1)[0][-1]
 				if "." in lastChar or "-" in lastChar  or "," in lastChar or "!" in lastChar or "?" in lastChar or "!" in lastChar:
-					pass
+					newPoem = newPoem + line + "\n"
 				else:
 					newPoem = newPoem + line.replace('</p>','.</p>\n')
+			elif "<p>" in line:
+				isParagraph = True
+				newPoem = newPoem + line + "\n"
 			else:
 				if isParagraph:
 					lastChar = line.rsplit('<br />',1)[0][-1]
