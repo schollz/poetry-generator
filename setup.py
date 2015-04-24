@@ -6,13 +6,8 @@ APP_URL = 'www.poetrygenerator.ninja'
 APP_PORT = 8002
 
 
-print 'installing...'
 
-apt_get_packages = ['nginx','virtualenv']
-
-for package in apt_get_packages:
-	print 'getting ' + package
-	os.system('apt-get install ' + package)
+## CONFIGURATION ##
 
 curDir = os.getcwd()
 
@@ -68,25 +63,43 @@ server {
 }
 """ % {'port':APP_PORT,'dir':curDir,'appname':APP_NAME.replace(' ',''),'url':APP_URL + ' ' + APP_URL.replace('www.','')}
 
-print 'generating init.d configuration file'
-with open('/etc/init/'+APP_NAME+'.conf','w') as f:
-	f.write(init_conf)
-	
-print 'generating nginx server block'
-with open('/etc/nginx/sites-available/'+APP_NAME,'w') as f:
-	f.write(nginx_block)
+####################
 
-os.system('mkdir /etc/nginx/logs/')
-os.system('rm /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
-print('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
-os.system('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
 
-os.system('/etc/init.d/nginx reload && /etc/init.d/nginx restart')
+if sys.argv[1]=='install' or sys.argv[1]=='deploy':
+	print 'installing...'
 
-os.system('virtualenv ./')
-os.system('source bin/activate')
-os.system('pip install gunicorn')
-os.system('deactivate')
+	apt_get_packages = ['virtualenv']
+
+	for package in apt_get_packages:
+		print 'getting ' + package
+		os.system('apt-get install ' + package)
+
+	os.system('virtualenv ./ && . bin/activate && pip install gunicorn && deactivate')
+
+
+	apt_get_packages = ['nginx']
+
+	for package in apt_get_packages:
+		print 'getting ' + package
+		os.system('apt-get install ' + package)
+	print 'generating init.d configuration file'
+	with open('/etc/init/'+APP_NAME+'.conf','w') as f:
+		f.write(init_conf)
+		
+	print 'generating nginx server block'
+	with open('/etc/nginx/sites-available/'+APP_NAME,'w') as f:
+		f.write(nginx_block)
+
+	os.system('mkdir /etc/nginx/logs/')
+	os.system('rm /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
+	print('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
+	os.system('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
+
+	os.system('/etc/init.d/nginx reload && /etc/init.d/nginx restart')
+else:
+	print 'usage: sudo python setup.py [install|deploy|uninstall]'
+
 
 
 	
