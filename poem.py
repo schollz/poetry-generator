@@ -116,9 +116,11 @@ class bnfDictionary:
 		return newPoem
 	
 bnf = bnfDictionary('poems.bnf')
+'''
 if "mushy" in sys.argv[1]:
 	print(bnf.generatePretty('<mushypoem>'))
 else:
 	print(bnf.generatePretty('<poem>'))
+''' 
 
 
