@@ -9,53 +9,29 @@ All the syntax and word choices are in the ```poem.bnf``` file. The main program
 
 Try the [demo here](http://www.poetrygenerator.ninja)
 
+Installation
+=================
 
-Setup/installation
-====================
-
-This program now uses ```virtualenv``` so it can be deployed with ```gunicorn```. To use, install virtualenv
-
-```
-apt-get install virtualenv
-``` 
-
-then change to the directory
+Edit setup.py to change 
 
 ```
-cd poetry-generator
+APP_NAME = 'poetry-generator'
+APP_URL = 'www.poetrygenerator.ninja'
+APP_PORT = 8002
 ```
 
-Now startup virtualenv and install the packages
+or leave the same - its up to you.
+
+Then run 
 
 ```
-virtualenv ./
-source bin/activate
-(virtualenv) pip install gunicorn
+sudo python setup.py install
 ```
 
+This program now uses ```virtualenv``` so it can be deployed with ```gunicorn```. The installation creates ```virtualenv``` and downloads the packages. Then it writes a new ```init.d``` script and sends that so that it can automatically start and stop. If you deploy, it will also generate a nginx server block so its already to go.
 
-To test out use
-
-```bash
-(virtualenv) ./bin/gunicorn -b 127.0.0.1:8002 -w 2 server:application
-```
-
-To exit virtualenv simply use
+The program should be running and accessible on your LAN network at
 
 ```
-deactivate
+YOURLOCALIP:8002/
 ```
-
-Now move the UpStart configuration file to the /etc/init/ folder
-
-```bash
-sudo cp *.conf /etc/init/
-```
-
-And now start hosting on port 8002 with
-
-```
-sudo start poetrygenerator_ninja
-```
-
-You should now see it on 127.0.0.1:8002!!

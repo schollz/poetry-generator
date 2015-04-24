@@ -1,35 +1,112 @@
 import sys
 import os
+import socket
 
 APP_NAME = 'poetry-generator'
 APP_URL = 'www.poetrygenerator.ninja'
 APP_PORT = 8002
 
-
+try:
+	print "working to " + sys.argv[1]
+except:
+	print 'usage: sudo python setup.py [install|deploy|uninstall]'
+	sys.exit()
 
 ## CONFIGURATION ##
-
+mainIP = [(s.connect(('8.8.8.8', 80)), s.getsockname()[0], s.close()) for s in [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]][0][1]
 curDir = os.getcwd()
 
 init_conf = """
-# This should be placed in /etc/init directory
+# This should be placed in /etc/init.d directory
 # start with
-# sudo start %(appname)s
+# sudo /etc/init.d/%(appname)s start
 # stop with
-# sudo stop %(appname)s
+# sudo /etc/init.d/%(appname)s start
 
-description "%(appname)s"
+dir="%(dir)s"
+user="nobody"
+cmd="%(dir)s/bin/gunicorn -b %(ip)s:%(port)s -w 4 server:application"
 
-start on (filesystem)
-stop on runlevel [016]
+name=`basename $0`
+pid_file="/var/run/$name.pid"
+stdout_log="/var/log/$name.log"
+stderr_log="/var/log/$name.err"
 
-respawn
-setuid nobody
-setgid nogroup
-chdir %(dir)s
+get_pid() {
+    cat "$pid_file"
+}
 
-exec %(dir)s/bin/gunicorn -b localhost:%(port)s -w 4 server:application
-""" % {'port':APP_PORT,'dir':curDir,'appname':APP_NAME.replace(' ','')}
+is_running() {
+    [ -f "$pid_file" ] && ps `get_pid` > /dev/null 2>&1
+}
+
+case "$1" in
+    start)
+    if is_running; then
+        echo "Already started"
+    else
+        echo "Starting $name"
+        cd "$dir"
+        sudo -u "$user" $cmd >> "$stdout_log" 2>> "$stderr_log" &
+        echo $! > "$pid_file"
+        if ! is_running; then
+            echo "Unable to start, see $stdout_log and $stderr_log"
+            exit 1
+        fi
+    fi
+    ;;
+    stop)
+    if is_running; then
+        echo -n "Stopping $name.."
+        kill `get_pid`
+        for i in {1..10}
+        do
+            if ! is_running; then
+                break
+            fi
+
+            echo -n "."
+            sleep 1
+        done
+        echo
+
+        if is_running; then
+            echo "Not stopped; may still be shutting down or shutdown may have failed"
+            exit 1
+        else
+            echo "Stopped"
+            if [ -f "$pid_file" ]; then
+                rm "$pid_file"
+            fi
+        fi
+    else
+        echo "Not running"
+    fi
+    ;;
+    restart)
+    $0 stop
+    if is_running; then
+        echo "Unable to stop, will not attempt to start"
+        exit 1
+    fi
+    $0 start
+    ;;
+    status)
+    if is_running; then
+        echo "Running"
+    else
+        echo "Stopped"
+        exit 1
+    fi
+    ;;
+    *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0
+""" % {'port':APP_PORT,'dir':curDir,'appname':APP_NAME.replace(' ',''),'ip':mainIP}
 
 nginx_block = """
 server {
@@ -84,8 +161,11 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 		print 'getting ' + package
 		os.system('apt-get install ' + package)
 	print 'generating init.d configuration file'
-	with open('/etc/init/'+APP_NAME+'.conf','w') as f:
+	with open('/etc/init.d/'+APP_NAME,'w') as f:
 		f.write(init_conf)
+	os.system('chmod +x /etc/init.d/'+APP_NAME)
+	print "starting server..."
+	os.system('/etc/init.d/' + APP_NAME + ' start')
 		
 	print 'generating nginx server block'
 	with open('/etc/nginx/sites-available/'+APP_NAME,'w') as f:
