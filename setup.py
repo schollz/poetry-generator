@@ -122,7 +122,7 @@ server {
 	server_name %(url)s;
 
 	location / {
-		proxy_pass http://127.0.0.1:%(port)s;
+		proxy_pass http://%(ip)s:%(port)s;
 		proxy_redirect off;
 		proxy_set_header X-Real-IP $remote_addr;
 		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -138,7 +138,7 @@ server {
 	}
 
 }
-""" % {'port':APP_PORT,'dir':curDir,'appname':APP_NAME.replace(' ',''),'url':APP_URL + ' ' + APP_URL.replace('www.','')}
+""" % {'port':APP_PORT,'dir':curDir,'appname':APP_NAME.replace(' ',''),'url':APP_URL + ' ' + APP_URL.replace('www.',''),'ip':mainIP}
 
 ####################
 
@@ -165,7 +165,7 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 		f.write(init_conf)
 	os.system('chmod +x /etc/init.d/'+APP_NAME)
 	print "starting server..."
-	os.system('/etc/init.d/' + APP_NAME + ' start')
+	os.system('/etc/init.d/' + APP_NAME + ' restart')
 		
 	print 'generating nginx server block'
 	with open('/etc/nginx/sites-available/'+APP_NAME,'w') as f:
@@ -177,6 +177,12 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 	os.system('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
 
 	os.system('/etc/init.d/nginx reload && /etc/init.d/nginx restart')
+	
+	print "-"*30
+	print "To activate:"
+	print '/etc/init.d/' + APP_NAME + ' [start|stop|restart]'
+	print 'Currently running on ' + str(mainIP) + ':'+str(APP_PORT)
+	print "-"*30
 else:
 	print 'usage: sudo python setup.py [install|deploy|uninstall]'
 
