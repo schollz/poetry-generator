@@ -35,3 +35,27 @@ The program should be running and accessible on your LAN network at
 ```
 YOURLOCALIP:8002/
 ```
+
+Common Error
+----------------
+
+When you run, you may see the following error:
+```bash
+[....] Reloading nginx configuration (via systemctl): nginx.serviceJob for nginx.service failed. See 'systemctl status nginx.service' and 'journalctl -xn' for details.
+ failed!
+```
+
+To fix this, you just need to enable the server_names in nginx. First
+
+```
+sudo vim /etc/nginx/nginx.conf
+```
+
+And uncomment these lines:
+
+```bash
+server_names_hash_bucket_size 64;
+server_name_in_redirect off;
+```
+
+and *now* you should be good to go!
