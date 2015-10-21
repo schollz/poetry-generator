@@ -9,6 +9,20 @@ All the syntax and word choices are in the ```poem.bnf``` file. The main program
 
 Try the [demo here](http://www.poetrygenerator.ninja)
 
+
+Super simple setup!
+======================
+
+Follow these commands to generate a poem if you have minimal experience coding/etc. Open up a terminal and use
+
+```bash
+git clone https://github.com/schollz/poetry-generator.git
+cd poetry-generator
+python3 run.py
+```
+
+That's it!
+
 Installation
 =================
 
