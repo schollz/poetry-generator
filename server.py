@@ -7,7 +7,7 @@ import os
 import random
 import re
 
-										
+
 html_template = """
 <html>
  <head>
@@ -37,7 +37,7 @@ margin: 0;
 padding: 0;
 }
 
-#poem { 
+#poem {
 margin: auto;
 padding: 20px 0;
 text-align: left;
@@ -102,7 +102,7 @@ bottom: 0;
 </style>
  </head>
  <body>
- 
+
  <h1>Poetry generator</h1>
 
 <div class="well center-block" style="max-width: 600px;">
@@ -132,7 +132,7 @@ bottom: 0;
 </html>
 
 """
- 
+
 pages = {
 	 'index' : html_template % (
 			"""
