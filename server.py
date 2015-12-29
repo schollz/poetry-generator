@@ -3,6 +3,10 @@ from cgi import parse_qs, escape
 from time import sleep
 from poem import *
 
+import os
+import random
+import re
+
 										
 html_template = """
 <html>
@@ -102,7 +106,7 @@ bottom: 0;
  <h1>Poetry generator</h1>
 
 <div class="well center-block" style="max-width: 600px;">
-   <form method="POST" action='/'> 
+   <form method="POST" action="/poem">
     <div class="row">
   <div class="col-md-6"><button type="submit"  class="btn btn-primary btn-lg btn-block" name='poemtype' value='poem'>Regular Poem</button></div>
   <div class="col-md-6"><button type="submit" class="btn btn-default btn-lg btn-block" name='poemtype' value='mushypoem'>Mushy poem</button></div>
@@ -132,41 +136,72 @@ bottom: 0;
 pages = {
 	 'index' : html_template % (
 			"""
-			<div id="poem">%(poem)s</div>
+			<div id="poem">%(poem)s <h2>%(url)s</h2></div>
 
 			"""),
 }
 
-def application(environ, start_response):
+class Router():
+	def __init__(self, url):
+		self.url = url
 
-	# the environment variable CONTENT_LENGTH may be empty or missing
+	def match(self, pattern):
+		match = re.search(pattern, self.url)
+		if match:
+			self.params = match.groupdict()
+			return True
+		else:
+			return False
+
+def application(environ, start_response):
+	url = environ['PATH_INFO']
+	router = Router(url)
+
+	if router.match('^/(?P<type>poem|mushypoem)/(?P<seed>[0-9a-f]+)$'):
+		return show_poem(environ, start_response, router)
+	else: # '/' '/poem' or anything else
+		return redirect_to_poem(environ, start_response)
+
+
+def redirect_to_poem(environ, start_response):
+	# We might have a POST body indicating the poem type; try to read it.
+
+	# The environment variable CONTENT_LENGTH may be empty or missing
 	try:
 		request_body_size = int(environ.get('CONTENT_LENGTH', 0))
 	except (ValueError):
 		request_body_size = 0
 
-	# When the method is POST the query string will be sent
-	# in the HTTP request body which is passed by the WSGI server
-	# in the file like wsgi.input environment variable.
+	# Read and parse the HTTP request body which is passed by the WSGI server
 	request_body = environ['wsgi.input'].read(request_body_size)
-	d = parse_qs(request_body)
-	
-	poemtype = d.get('poemtype') # Returns a list of hobbies.
-	# Always escape user input to avoid script injection
-	try:
-		poemtype = escape(poemtype)
-	except:
-		pass
-		
-	if int(request_body_size) > 0:
-		response_body = pages['index'] % {'poem':bnf.generatePretty('<'+poemtype[0]+'>')}
-	else:
-		response_body = pages['index'] % {'poem':''}
-		
-	status = '200 OK'
+	poemtype = None
+	qs = parse_qs(request_body)
+	if qs:
+		poemtype = qs.get('poemtype')[0]
+	if poemtype != 'mushypoem':
+		poemtype = 'poem'
 
-	response_headers = [('Content-Type', 'text/html'),
-								('Content-Length', str(len(response_body)))]
-	start_response(status, response_headers)
+	seed = os.urandom(8).encode('hex')
+
+	start_response('302 Found', [
+		('Location', '/' + poemtype + '/' + seed)
+	])
+
+	return []
+
+
+def show_poem(environ, start_response, router):
+	# Ensure that we can always get back to a given poem
+	random.seed(int(router.params['seed'], 16))
+
+	response_body = pages['index'] % {
+		'poem': bnf.generatePretty('<' + router.params['type'] + '>'),
+		'url': router.url
+	}
+
+	start_response('200 OK', [
+		('Content-Type', 'text/html'),
+		('Content-Length', str(len(response_body)))
+	])
 
 	return [response_body]
