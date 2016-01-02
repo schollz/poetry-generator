@@ -73,3 +73,7 @@ server_name_in_redirect off;
 ```
 
 and *now* you should be good to go!
+
+# Credits
+
+- Thanks a lot to [James Nylen](https://github.com/nylen) for a great pull-request to add static URLs to save poems!
