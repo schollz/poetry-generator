@@ -13,7 +13,7 @@ Follow these commands to generate a poem if you have minimal experience coding/e
 ```bash
 git clone https://github.com/schollz/poetry-generator.git
 cd poetry-generator
-python3 run.py
+python3 poem.py
 ```
 
 That's it!
