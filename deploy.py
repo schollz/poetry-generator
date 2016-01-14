@@ -166,7 +166,7 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 	os.system('chmod +x /etc/init.d/'+APP_NAME)
 	print "starting server..."
 	os.system('/etc/init.d/' + APP_NAME + ' restart')
-		
+
 	print 'generating nginx server block'
 	with open('/etc/nginx/sites-available/'+APP_NAME,'w') as f:
 		f.write(nginx_block)
@@ -177,7 +177,7 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 	os.system('ln -s /etc/nginx/sites-available/%(app)s /etc/nginx/sites-enabled/%(app)s' % {'app':APP_NAME})
 
 	os.system('/etc/init.d/nginx reload && /etc/init.d/nginx restart')
-	
+
 	print "-"*30
 	print "To activate:"
 	print '/etc/init.d/' + APP_NAME + ' [start|stop|restart]'
@@ -185,9 +185,3 @@ if sys.argv[1]=='install' or sys.argv[1]=='deploy':
 	print "-"*30
 else:
 	print 'usage: sudo python setup.py [install|deploy|uninstall]'
-
-
-
-	
-
-	
