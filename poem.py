@@ -6,6 +6,8 @@ import uuid
 import binascii
 import re
 
+VERSION = "1.0"
+
 class bnfDictionary:
 
     def __init__(self, file):
