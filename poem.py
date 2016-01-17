@@ -3,7 +3,7 @@ import os
 import random
 import sys
 import uuid
-import binascii
+import base64
 import yaml
 import re
 
@@ -16,25 +16,14 @@ unzip linguistics.zip""")
 
 VERSION = "1.1"
 
+THEME_PROB = 20
+
 
 class bnfDictionary:
 
     def __init__(self, file):
         self.grammar = yaml.load(open(file,'r'))
-        print(self.grammar)
-        # numFeatures = 0
-        # with open("poems.bnf") as f:
-        #     for line in f:
-        #         lineSplit = line.split('=')
-        #         self.grammar[lineSplit[0]] = []
-        #         for syntax in lineSplit[1].split('|'):
-        #             self.grammar[lineSplit[0]].append(syntax)
-        #
-        #         self.grammar[lineSplit[0]] = list(
-        #             set(self.grammar[lineSplit[0]]))
-        #         numFeatures += len(self.grammar[lineSplit[0]])
-        #         # print(self.grammar[lineSplit[0]])
-        # print("Loaded " + str(numFeatures) + " features.")
+        self.poemtype = "<poem>"
 
     def generate(self, key, num):
         gram = self.grammar[key]
@@ -50,14 +39,14 @@ class bnfDictionary:
                 if "<" not in word:
                     string = string + word + " "
                 else:
-                    if "verb" in word:
-                        if "pverb" in word:
+                    if "verb" in word and word != '<adverb>':
+                        if "pverb" in word or "mushy" in self.poemtype:
                             v = self.generate("<pverb>", 1).strip()
                         elif "nverb" in word:
                             v = self.generate("<nverb>", 1).strip()
-                        else:
-                            v = self.generate("<verb>", 1).strip()
-                        if random.randint(1, 100) < 0:
+                        # else:
+                        #     v = self.generate("<verb>", 1).strip()
+                        if random.randint(1, 100) < THEME_PROB:
                             v = self.generate("<theme-verb>", 1).strip()
                         if "verb-inf" in word:
                             string = string + \
@@ -71,11 +60,11 @@ class bnfDictionary:
                         else:
                             string = string + v + " "
                     elif "noun" in word:
-                        if "pnoun" in word:
+                        if "pnoun" in word or "mushy" in self.poemtype:
                             v = self.generate("<pnoun>", 1).strip()
                         else:
                             v = self.generate("<nnoun>", 1).strip()
-                        if random.randint(1, 100) < 0:
+                        if random.randint(1, 100) < THEME_PROB:
                             v = self.generate("<theme-noun>", 1).strip()
                         if "pl" in word:
                             v = en.noun.plural(v)
@@ -86,23 +75,43 @@ class bnfDictionary:
                             v = en.noun.plural(v)
                         string = string + v + " "
                     elif "adj" in word:
-                        if random.randint(1, 100) < 0:
-                            v = self.generate("<theme-adj>", 1).strip()
+                        if "mushy" in self.poemtype:
+                            v = self.generate("<padj>",1)
                         else:
-                            v = self.generate(word, 1).strip()
+                            if random.randint(1, 100) < THEME_PROB:
+                                v = self.generate("<theme-adj>", 1).strip()
+                            else:
+                                v = self.generate(word, 1).strip()
                         string = string + v + " "
                     elif "fruit" in word:
                         v = self.generate("<fruit>", 1).strip()
                         if "pl" in word:
                             v = en.noun.plural(v)
                         string = string + self.generate(word, 1) + " "
-                    else:
+                    elif "person" in word:
+                        v = self.generate("<fruit>", 1).strip()
+                        if "pl" in word:
+                            v = en.noun.plural(v)
                         string = string + self.generate(word, 1) + " "
+                    else:
+                        if "-pl" in word:
+                            v = en.noun.plural(self.generate(word.replace("-pl",""),1))
+                        else:
+                            v = self.generate(word, 1)
+                        string = string + v + " "
         return string
 
-    def generatePretty(self, key):
+    def generatePretty(self, key, seed_str):
+        if seed_str == None:
+            seed_str = str(uuid.uuid4()).split("-")[0]
+
+        random.seed(uuid.uuid5(uuid.NAMESPACE_DNS,seed_str).int)
         #tool = language_check.LanguageTool('en-US')
+        self.poemtype = key
+        if key == "<mushypoem>":
+            key = "<poem>"
         poem = self.generate(key, 1)
+        print(poem)
         poem = poem.replace(" ,", ",")
         puncuation = [".", ".", ".", ".", "!", "?"]
         dontbreaks = ["of", "behind", "the", "when", "what", "why", "who", ",",
@@ -205,20 +214,15 @@ class bnfDictionary:
             else:
                 newPoem2 = newPoem2 + " <br />\n"
         newPoem2 = newPoem2 + "</p>"
-        return newPoem2
+        return newPoem2,seed_str
 
-bnf = bnfDictionary('braintest.yaml')
+bnf = bnfDictionary('brain.yaml')
 
 
 def generate_poem(poemtype, hex_seed=None):
-    if hex_seed == None:
-        hex_seed = str(uuid.uuid4()).split("-")[0]
-
-    random.seed(int(binascii.hexlify(hex_seed.encode()), 16))
-
+    p,seed_str = bnf.generatePretty('<' + poemtype + '>',hex_seed)
     return (
-        bnf.generatePretty('<' + poemtype + '>')
-        + '\n<h2>/' + poemtype + '/' + hex_seed + '</h2>'
+        p + '\n<h2>/' + poemtype + '/' + seed_str + '</h2>'
     )
 
 if __name__ == '__main__':

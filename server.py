@@ -12,7 +12,7 @@ html_template = """
 <html>
  <head>
   <title>A simple poem generator</title>
-	<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -78,10 +78,10 @@ content: ' -';
 }
 
 #poem h2 + p:first-letter {
-	float: left;
-	font-size: 38px;
-	line-height: 1;
-	margin: 2px 5px 0 0;
+    float: left;
+    font-size: 38px;
+    line-height: 1;
+    margin: 2px 5px 0 0;
 }
 
 #poem p:first-line {
@@ -121,9 +121,9 @@ bottom: 0;
 
 
 <footer class="footer">
-	<div class="container">
-		<p class="text-muted">See how this code passed the turing test <a href="http://rpiai.com/2015/01/24/turing-test-passed-using-computer-generated-poetry/">here</a> and <a href="http://motherboard.vice.com/read/the-poem-that-passed-the-turing-test">here</a>. Also check out the <a href="https://github.com/schollz/poetry-generator">source code!</a></p>
-	</div>
+    <div class="container">
+        <p class="text-muted">See how this code passed the turing test <a href="http://rpiai.com/2015/01/24/turing-test-passed-using-computer-generated-poetry/">here</a> and <a href="http://motherboard.vice.com/read/the-poem-that-passed-the-turing-test">here</a>. Also check out the <a href="https://github.com/schollz/poetry-generator">source code!</a></p>
+    </div>
 </footer>
 
 
@@ -134,74 +134,73 @@ bottom: 0;
 """
 
 pages = {
-	 'index' : html_template % (
-			"""
-			<div id="poem">%(poem)s <h2>%(url)s</h2></div>
+     'index' : html_template % (
+            """
+            <div id="poem">%(poem)s <h2>%(url)s</h2></div>
 
-			"""),
+            """),
 }
 
 class Router():
-	def __init__(self, url):
-		self.url = url
+    def __init__(self, url):
+        self.url = url
 
-	def match(self, pattern):
-		match = re.search(pattern, self.url)
-		if match:
-			self.params = match.groupdict()
-			return True
-		else:
-			return False
+    def match(self, pattern):
+        match = re.search(pattern, self.url)
+        if match:
+            self.params = match.groupdict()
+            return True
+        else:
+            return False
 
 def application(environ, start_response):
-	url = environ['PATH_INFO']
-	router = Router(url)
+    url = environ['PATH_INFO']
+    router = Router(url)
 
-	if router.match('^/(?P<type>poem|mushypoem)/(?P<seed>[0-9a-f]+)$'):
-		return show_poem(environ, start_response, router)
-	else: # '/' '/poem' or anything else
-		return redirect_to_poem(environ, start_response)
+    if router.match('^/(?P<type>poem|mushypoem)/(?P<seed>[0-9a-zA-Z]+)$'):
+        return show_poem(environ, start_response, router)
+    else: # '/' '/poem' or anything else
+        return redirect_to_poem(environ, start_response)
 
 
 def redirect_to_poem(environ, start_response):
-	# We might have a POST body indicating the poem type; try to read it.
+    # We might have a POST body indicating the poem type; try to read it.
 
-	# The environment variable CONTENT_LENGTH may be empty or missing
-	try:
-		request_body_size = int(environ.get('CONTENT_LENGTH', 0))
-	except (ValueError):
-		request_body_size = 0
+    # The environment variable CONTENT_LENGTH may be empty or missing
+    try:
+        request_body_size = int(environ.get('CONTENT_LENGTH', 0))
+    except (ValueError):
+        request_body_size = 0
 
-	# Read and parse the HTTP request body which is passed by the WSGI server
-	request_body = environ['wsgi.input'].read(request_body_size)
-	poemtype = None
-	qs = parse_qs(request_body)
-	if qs:
-		poemtype = qs.get('poemtype')[0]
-	if poemtype != 'mushypoem':
-		poemtype = 'poem'
+    # Read and parse the HTTP request body which is passed by the WSGI server
+    request_body = environ['wsgi.input'].read(request_body_size)
+    poemtype = None
+    qs = parse_qs(request_body)
+    if qs:
+        poemtype = qs.get('poemtype')[0]
+    if poemtype != 'mushypoem':
+        poemtype = 'poem'
 
-	seed = os.urandom(8).encode('hex')
+    seed = os.urandom(8).encode('hex')
 
-	start_response('302 Found', [
-		('Location', '/' + poemtype + '/' + seed)
-	])
+    start_response('302 Found', [
+        ('Location', '/' + poemtype + '/' + seed)
+    ])
 
-	return []
+    return []
 
 
 def show_poem(environ, start_response, router):
-	# Ensure that we can always get back to a given poem
-	random.seed(int(router.params['seed'], 16))
+    # Ensure that we can always get back to a given poem
+    p,str_seed = bnf.generatePretty('<' + router.params['type'] + '>',router.params['seed'])
+    response_body = pages['index'] % {
+        'poem': p,
+        'url': router.url
+    }
 
-	response_body = pages['index'] % {
-		'poem': bnf.generatePretty('<' + router.params['type'] + '>'),
-		'url': router.url
-	}
+    start_response('200 OK', [
+        ('Content-Type', 'text/html'),
+        ('Content-Length', str(len(response_body)))
+    ])
 
-	start_response('200 OK', [
-		('Content-Type', 'text/html'),
-		('Content-Length', str(len(response_body)))
-	])
-
-	return [response_body]
+    return [response_body]

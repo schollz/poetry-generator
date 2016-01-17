@@ -39,6 +39,13 @@ Install gunicorn and then simply use
 gunicorn server:application
 ```
 
+Don't have gunicorn? Use waitress:
+
+```bash
+pip install waitress
+waitress-serve --port=8000 server:application
+```
+
 Then open your browser to `localhost:8000` to see the poetry generator.
 
 # Deployment
