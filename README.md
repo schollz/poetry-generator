@@ -1,6 +1,12 @@
 # poetry-generator v. 1.1
 _Updates: Uses "en" now_
 
+```
+verb-pr = hopes
+verb-past = hoped
+verb = hope
+verb-inf = hoping
+```
 # TODO
  - Replace all the infinitive/present/past verbs with en.verb translator
  - Replace singular/plural nouns with en.noun
