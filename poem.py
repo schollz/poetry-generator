@@ -6,7 +6,14 @@ import uuid
 import binascii
 import re
 
-VERSION = "1.0"
+try:
+    import en
+except:
+    print("DOWNLOD NODECUBE")
+    print("""wget https://www.nodebox.net/code/data/media/linguistics.zip
+unzip linguistics.zip""")
+
+VERSION = "1.1"
 
 class bnfDictionary:
 
@@ -35,9 +42,30 @@ class bnfDictionary:
                 if "<" not in word:
                     string = string + word + " "
                 else:
-                    if random.randint(1,10) < 0 and '<theme-' + word[1:] in self.grammar:
-                        word = '<theme-'+ word[1:]
-                    string = string + self.generate(word, 1) + " "
+                    if random.randint(1,10) < 3:
+                        if "verb" in word:
+                            v = self.generate("<theme-verb>", 1).strip()
+                            if "verb-inf" in word:
+                                string = string + en.verb.present_participle(v) + " "
+                            elif "verb-pr" in word:
+                                string = string + en.verb.present(v, person=3, negate=False) + " "
+                            elif "verb-past" in word:
+                                string = string + en.verb.past(v) + " "
+                            else:
+                                string = string + en.verb.present(v) + " "
+                        elif "noun" in word:
+                            v = self.generate("<theme-noun>", 1).strip()
+                            if "noun-pl" in word:
+                                string = string + en.noun.plural(v) + " "
+                            else:
+                                string = string + en.noun.singular(v) + " "
+                        elif "adj" in word:
+                            v = self.generate("<theme-adj>", 1).strip()
+                            string = string + v + " "
+                        else:
+                            string = string + self.generate(word, 1) + " "
+                    else:
+                        string = string + self.generate(word, 1) + " "
         return string.replace('newline', '')
 
     def generatePretty(self, key):
