@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 from cgi import parse_qs, escape
 from time import sleep
-from poem import *
-
+import json
 import os
 import random
 import re
 
+from poem import *
 
 html_template = """
 <html>
@@ -100,6 +100,10 @@ bottom: 0;
 }
 
 </style>
+<script>
+var msg = new SpeechSynthesisUtterance();
+var voices = window.speechSynthesis.getVoices();
+</script>
  </head>
  <body>
 
@@ -115,7 +119,7 @@ bottom: 0;
 </div>
 
 
-%s
+<div id="poem">%(poem)s <h2>%(url)s</h2></div>
 
 
 
@@ -125,20 +129,53 @@ bottom: 0;
         <p class="text-muted">See how this code passed the turing test <a href="http://rpiai.com/2015/01/24/turing-test-passed-using-computer-generated-poetry/">here</a> and <a href="http://motherboard.vice.com/read/the-poem-that-passed-the-turing-test">here</a>. Also check out the <a href="https://github.com/schollz/poetry-generator">source code!</a></p>
     </div>
 </footer>
+<script src='https://code.responsivevoice.org/responsivevoice.js'></script>
+<input onclick='partA();' type='button' value='Play' />
+<script>
+document.addEventListener("DOMContentLoaded", function(event) {
+    msg = new SpeechSynthesisUtterance();
+    voices = window.speechSynthesis.getVoices();
+setTimeout(function () {
+    msg.voice = voices[10]; // Note: some voices don't support altering params
+    msg.voiceURI = 'native';
+    msg.volume = 1; // 0 to 1
+    msg.rate = 1; // 0.1 to 10
+    msg.pitch = 0; //0 to 2
+    msg.lang = 'en-US';
+    messages = %(lines)s;
+    var messageNumber = 0;
+    msg.text = messages[messageNumber];
+    msg.onend = function(e) {
+      console.log('Finished in ' + event.elapsedTime + ' seconds.');
+      messageNumber = messageNumber + 1;
+      msg.text = messages[messageNumber];
+      msg.voice = voices[10]; // Note: some voices don't support altering params
+      msg.voiceURI = 'native';
+      msg.rate = 1; // 0.1 to 10
+      msg.pitch = 0; //0 to 2
+      msg.lang = 'en-US';
+      msg.volume = 1; // 0 to 1
+      if (msg.text=="pause") {
+        msg.volume = 0;
+      } else {
+      }
+      if (messageNumber < messages.length) {
+        speechSynthesis.speak(msg);
+      }
+    };
+    speechSynthesis.speak(msg);
+}, 1000);
 
+});
 
-
+</script>
  </body>
 </html>
 
 """
 
 pages = {
-     'index' : html_template % (
-            """
-            <div id="poem">%(poem)s <h2>%(url)s</h2></div>
-
-            """),
+     'index' : html_template,
 }
 
 class Router():
@@ -193,9 +230,16 @@ def redirect_to_poem(environ, start_response):
 def show_poem(environ, start_response, router):
     # Ensure that we can always get back to a given poem
     p,str_seed = bnf.generatePretty('<' + router.params['type'] + '>',router.params['seed'])
+    filtered = []
+    for line in re.sub("<.*?>", " ", p).split("\n"):
+        if len(line.strip()) > 0:
+            filtered.append(line.strip())
+        else:
+            filtered.append("pause")
     response_body = pages['index'] % {
         'poem': p,
-        'url': router.url
+        'url': router.url,
+        'lines': json.dumps(filtered)
     }
 
     start_response('200 OK', [

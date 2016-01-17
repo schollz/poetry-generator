@@ -221,14 +221,18 @@ bnf = bnfDictionary('brain.yaml')
 
 def generate_poem(poemtype, hex_seed=None):
     p,seed_str = bnf.generatePretty('<' + poemtype + '>',hex_seed)
-    return (
-        p + '\n<h2>/' + poemtype + '/' + seed_str + '</h2>'
-    )
+    return p,seed_str
 
 if __name__ == '__main__':
     poemtype = 'poem'
     if 'mushy' in sys.argv[1:]:
         poemtype = 'mushypoem'
-    p=generate_poem(poemtype)
+    p,seed_str=generate_poem(poemtype)
     print("*"*30 + "\n"*5)
-    print(re.sub("<.*?>", " ", p))
+    filtered = []
+    for line in re.sub("<.*?>", " ", p).split("\n"):
+        if len(line.strip()) > 0:
+            filtered.append(line.strip())
+        else:
+            filtered.append("pause")
+    print(filtered)
