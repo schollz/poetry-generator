@@ -4,19 +4,23 @@ import random
 import sys
 import uuid
 import binascii
-
+import re
 
 class bnfDictionary:
 
     def __init__(self, file):
         self.grammar = {}
+        numFeatures = 0
         with open("poems.bnf") as f:
             for line in f:
                 lineSplit = line.split('=')
                 self.grammar[lineSplit[0]] = []
                 for syntax in lineSplit[1].split('|'):
                     self.grammar[lineSplit[0]].append(syntax)
+                self.grammar[lineSplit[0]] = list(set(self.grammar[lineSplit[0]]))
+                numFeatures += len(self.grammar[lineSplit[0]])
                 # print(self.grammar[lineSplit[0]])
+        print("Loaded " + str(numFeatures) + " features.")
 
     def generate(self, key, num):
         gram = self.grammar[key]
@@ -29,6 +33,8 @@ class bnfDictionary:
                 if "<" not in word:
                     string = string + word + " "
                 else:
+                    if random.randint(1,10) < 0 and '<theme-' + word[1:] in self.grammar:
+                        word = '<theme-'+ word[1:]
                     string = string + self.generate(word, 1) + " "
         return string.replace('newline', '')
 
@@ -128,10 +134,10 @@ bnf = bnfDictionary('poems.bnf')
 
 
 def generate_poem(poemtype, hex_seed=None):
-    if not hex_seed:
+    if hex_seed == None:
         hex_seed = str(uuid.uuid4()).split("-")[0]
 
-    random.seed(int(binascii.hexlify(hex_seed.encode()),16))
+    random.seed(int(binascii.hexlify(hex_seed.encode()), 16))
 
     return (
         bnf.generatePretty('<' + poemtype + '>')
@@ -142,4 +148,4 @@ if __name__ == '__main__':
     poemtype = 'poem'
     if 'mushy' in sys.argv[1:]:
         poemtype = 'mushypoem'
-    print(generate_poem(poemtype))
+    print(re.sub("<.*?>", " ",generate_poem(poemtype)))
