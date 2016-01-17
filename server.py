@@ -13,6 +13,7 @@ html_template = """
  <head>
   <title>A simple poem generator</title>
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+<script src=https://code.jquery.com/jquery-1.12.0.min.js"></script>
 <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -118,11 +119,7 @@ var voices = window.speechSynthesis.getVoices();
     </form>
 </div>
 
-
 <div id="poem">%(poem)s <h2>%(url)s</h2></div>
-
-
-
 
 <footer class="footer">
     <div class="container">
