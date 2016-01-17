@@ -65,6 +65,12 @@
   - My <padj> <bodypart> <pverb-pr> you always .
   - There ought to be a <pnoun> of a <padj> <pnoun> <pverb-inf> in a <place> .
 <stanzaEND>:
+  - One <adj> option .
+  - You - the <padj> <bodypart> .
+  - The <pnoun> plan that has everyone <nadj> .
+  - What seems <simultaneous> to one will not seem so to another .
+  - For <pnoun> was <nadj> and morally <neutral> .
+  - Fewer and fewer <p> <nverb> about another mode of <pfeeling> .
   - <pprep> the <nverb-inf> <nnoun-pl> .
   - return to the homeland of the <pnoun-pl> .
   - and <pnoun-pl> and <pnoun-pl> .
@@ -101,6 +107,18 @@
   - <padj> , <ptexture> <pnoun> !
 <stanzaMID>:
   - <nadj> <person-pl> and <person-pl> . <p> For me they are <adj> .
+  - But I should be <trueto> <studyfield> , <nverb-inf> among its <nadj> <pnoun-pl>. <p> So let us <try> to <say> a story <without> <adj> redundancies.
+  - <pulledout> and <pulledout> like a <pnoun> .
+  - Shall we <moveon> ?
+  - A <geometry> <pprep> a <geometry> , <p> the <nadj> workings of <padj> law .
+  - They are all <person-pl> <p> professional <nnoun-pl> in whose <padj> <pnoun-pl> originate .
+  - Around the <place> I like to <pverb> like a <nadj> <pnoun> .
+  - <nobody> here is waiting for the next <pnoun> . <p> <pnoun> . You <pverb-past> yourself for <pverb-inf> .
+  - <padj> empire . The <geometry> functions to <pverb> a <system> <p> to its <system> .
+  - The I in <pnoun> .
+  - The <place> <pprep> hers <p> a <story> we <say> in passing , <p> with notions of <pfeeling> <p> and a passion for <studyfield> and <studyfield>
+  - Realized <padj> <pnoun> .
+  - <pnoun> was no longer <below> the <recording> threshold .
   - the <padj> <pnoun-pl> <nverb-past> .
   - You are the <nadj> <person> of a <animal> , <p> the <nadj> ness of the <pnoun> , the power of the <element> .
   - of a <ncolor> <person> that <pverb-pr> <pnoun-pl> .
@@ -180,6 +198,10 @@
 <with>:
   - with
   - without
+<story>:
+  - tale
+  - history
+  - story
 <nprep>:
   - among
   - in the middle of
@@ -246,6 +268,9 @@
   - Your <bodypart> is enough
   - From <element> to <element>
   - <person-pl> must always prove their <pnoun-pl>
+<trueto>:
+  - untrue to
+  - true to
 <pfeeling>:
   - love
   - joy
@@ -257,6 +282,37 @@
   - honor
   - happiness
   - wonder
+  - sincerity
+  - decency
+<neutral>:
+  - positive
+  - neutral
+  - negative
+<simultaneous>:
+  - simultaneous
+  - disjoint
+<recording>:
+  - transmission
+  - recording
+<below>:
+  - above
+  - below
+  - right at
+<system>:
+  - system
+  - environment
+  - architecture
+<pulledout>:
+  - pulled out
+  - shut out
+  - shut up
+  - closed off
+<moveon>:
+  - move on
+  - set forth
+  - go forward
+  - keep going
+  - preceed
 <element>:
   - fire
   - sky
@@ -530,6 +586,7 @@
   - her
   - them
 <nverb>:
+  - loiter
   - sob
   - force
   - deform
@@ -621,6 +678,7 @@
   - lemon
   - banana
 <padj>:
+  - natural
   - irreducable
   - aquatic
   - winged
@@ -936,7 +994,15 @@
   - minor
   - side
   - overtone
+  - historical
+  - alphabetic
+  - grammatic
 <nadj>:
+  - dead
+  - wayside
+  - inevitable
+  - directionless
+  - listless
   - rusted
   - skeleton
   - neon
@@ -1100,6 +1166,9 @@
   - photography
   - oceanography
   - jouranlism
+  - science
+  - mountaineering
+  - engineering
 <probable>:
   - probable
   - lucky
@@ -1120,6 +1189,7 @@
   - bread
   - apple
 <pverb>:
+  - connect
   - respond
   - perch
   - set
@@ -1262,7 +1332,30 @@
   - beligerance
 <person-pl>:
   - fill
+<without>:
+  - devoid of
+  - without
+<say>:
+  - divulge
+  - speak
+  - tell
+<try>:
+  - try
+  - attempt
+  - begin
+  - seek
+<geometry>:
+  - circle
+  - line
+  - triangle
+  - square
+  - tetrahedron
+  - quadrangle
+  - line segment
+  - loop
 <person>:
+  - bride
+  - mountaineer
   - gentleman
   - one
   - elder
@@ -1274,7 +1367,7 @@
   - aunt
   - custodian
   - woman
-  - astronaunt
+  - astronaut
   - uncle
   - child
   - cousin
