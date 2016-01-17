@@ -4,6 +4,7 @@ import random
 import sys
 import uuid
 import binascii
+import yaml
 import re
 
 try:
@@ -19,24 +20,28 @@ VERSION = "1.1"
 class bnfDictionary:
 
     def __init__(self, file):
-        self.grammar = {}
-        numFeatures = 0
-        with open("poems.bnf") as f:
-            for line in f:
-                lineSplit = line.split('=')
-                self.grammar[lineSplit[0]] = []
-                for syntax in lineSplit[1].split('|'):
-                    self.grammar[lineSplit[0]].append(syntax)
-
-                self.grammar[lineSplit[0]] = list(
-                    set(self.grammar[lineSplit[0]]))
-                numFeatures += len(self.grammar[lineSplit[0]])
-                # print(self.grammar[lineSplit[0]])
-        print("Loaded " + str(numFeatures) + " features.")
+        self.grammar = yaml.load(open(file,'r'))
+        print(self.grammar)
+        # numFeatures = 0
+        # with open("poems.bnf") as f:
+        #     for line in f:
+        #         lineSplit = line.split('=')
+        #         self.grammar[lineSplit[0]] = []
+        #         for syntax in lineSplit[1].split('|'):
+        #             self.grammar[lineSplit[0]].append(syntax)
+        #
+        #         self.grammar[lineSplit[0]] = list(
+        #             set(self.grammar[lineSplit[0]]))
+        #         numFeatures += len(self.grammar[lineSplit[0]])
+        #         # print(self.grammar[lineSplit[0]])
+        # print("Loaded " + str(numFeatures) + " features.")
 
     def generate(self, key, num):
         gram = self.grammar[key]
-        i = random.randint(0, len(gram) - 1)
+        if len(gram)==1:
+            i = 0
+        else:
+            i = random.randint(0, len(gram) - 1)
         string = ""
         if "<" not in gram[i]:
             string = gram[i]
@@ -48,9 +53,11 @@ class bnfDictionary:
                     if "verb" in word:
                         if "pverb" in word:
                             v = self.generate("<pverb>", 1).strip()
-                        else:
+                        elif "nverb" in word:
                             v = self.generate("<nverb>", 1).strip()
-                        if random.randint(1, 100) < 11:
+                        else:
+                            v = self.generate("<verb>", 1).strip()
+                        if random.randint(1, 100) < 0:
                             v = self.generate("<theme-verb>", 1).strip()
                         if "verb-inf" in word:
                             string = string + \
@@ -68,7 +75,7 @@ class bnfDictionary:
                             v = self.generate("<pnoun>", 1).strip()
                         else:
                             v = self.generate("<nnoun>", 1).strip()
-                        if random.randint(1, 100) < 11:
+                        if random.randint(1, 100) < 0:
                             v = self.generate("<theme-noun>", 1).strip()
                         if "pl" in word:
                             v = en.noun.plural(v)
@@ -79,7 +86,7 @@ class bnfDictionary:
                             v = en.noun.plural(v)
                         string = string + v + " "
                     elif "adj" in word:
-                        if random.randint(1, 100) < 11:
+                        if random.randint(1, 100) < 0:
                             v = self.generate("<theme-adj>", 1).strip()
                         else:
                             v = self.generate(word, 1).strip()
@@ -91,7 +98,7 @@ class bnfDictionary:
                         string = string + self.generate(word, 1) + " "
                     else:
                         string = string + self.generate(word, 1) + " "
-        return string.replace('newline', '')
+        return string
 
     def generatePretty(self, key):
         #tool = language_check.LanguageTool('en-US')
@@ -99,27 +106,27 @@ class bnfDictionary:
         poem = poem.replace(" ,", ",")
         puncuation = [".", ".", ".", ".", "!", "?"]
         dontbreaks = ["of", "behind", "the", "when", "what", "why", "who", ",",
-                      "your", "by", "like", "to", "you", "your", "a", "are", "become", "zbreak"]
+                      "your", "by", "like", "to", "you", "your", "a", "are", "become", "newline"]
         capitalize = False
         breaks = 0
         poem2 = []
         foundFirstBreak = False
-        for word in poem.replace("\n", "zbreak").split():
+        for word in poem.replace("\n", "newline").split():
             poem2.append(word.lower())
-            if random.randint(1, 100) < 2 and "zbreak" not in word and foundFirstBreak:
+            if random.randint(1, 100) < 2 and "newline" not in word and foundFirstBreak:
                 isgood = True
                 for dontbreak in list(dontbreaks + puncuation):
                     if dontbreak == word.lower():
                         isgood = False
                 if isgood:
-                    poem2.append("zbreak")
-            if "zbreak" in word:
+                    poem2.append("newline")
+            if "newline" in word:
                 foundFirstBreak = True
 
         poem3 = []
         beforeFirstBreak = True
         for word in poem2:
-            if "zbreak" in word:
+            if "newline" in word:
                 breaks += 1
                 beforeFirstBreak = False
             else:
@@ -131,14 +138,14 @@ class bnfDictionary:
             else:
                 if breaks > 1:
                     capitalize = True
-                if capitalize == True and "zbreak" not in word:
+                if capitalize == True and "newline" not in word:
                     word = word.capitalize()
                     capitalize = False
                 for punc in list(set(puncuation)):
                     if punc in word:
                         capitalize = True
                 poem3.append(word)
-                if random.randint(1, 100) < 0 and "zbreak" not in word:
+                if random.randint(1, 100) < 0 and "newline" not in word:
                     isgood = True
                     for dontbreak in list(dontbreaks + puncuation):
                         if dontbreak == word.lower():
@@ -157,11 +164,11 @@ class bnfDictionary:
         newPoem = " ".join(poem3)
 
         newPoem = newPoem.replace(" a a", " an a")
-        newPoem = newPoem.replace("zbreak .", ". zbreak")
-        newPoem = newPoem.replace("zbreak ?", "? zbreak")
-        newPoem = newPoem.replace("zbreak !", "! zbreak")
-        newPoem = newPoem.replace("zbreak ,", ", zbreak")
-        newPoem = newPoem.replace("zbreak", "\n")
+        newPoem = newPoem.replace("newline .", ". newline")
+        newPoem = newPoem.replace("newline ?", "? newline")
+        newPoem = newPoem.replace("newline !", "! newline")
+        newPoem = newPoem.replace("newline ,", ", newline")
+        newPoem = newPoem.replace("newline", "\n")
         newPoem = newPoem.replace(" \n \n", "\n\n")
         newPoem = newPoem.replace("\n \n ", "\n\n")
         newPoem = newPoem.replace(" '", "'")
@@ -200,7 +207,7 @@ class bnfDictionary:
         newPoem2 = newPoem2 + "</p>"
         return newPoem2
 
-bnf = bnfDictionary('poems.bnf')
+bnf = bnfDictionary('braintest.yaml')
 
 
 def generate_poem(poemtype, hex_seed=None):
@@ -218,5 +225,6 @@ if __name__ == '__main__':
     poemtype = 'poem'
     if 'mushy' in sys.argv[1:]:
         poemtype = 'mushypoem'
-    # print(re.sub("<.*?>", " ", generate_poem(poemtype)))
-    print(generate_poem(poemtype))
+    p=generate_poem(poemtype)
+    print("*"*30 + "\n"*5)
+    print(re.sub("<.*?>", " ", p))
