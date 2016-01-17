@@ -26,6 +26,7 @@ class bnfDictionary:
                 self.grammar[lineSplit[0]] = []
                 for syntax in lineSplit[1].split('|'):
                     self.grammar[lineSplit[0]].append(syntax)
+
                 self.grammar[lineSplit[0]] = list(set(self.grammar[lineSplit[0]]))
                 numFeatures += len(self.grammar[lineSplit[0]])
                 # print(self.grammar[lineSplit[0]])
@@ -92,15 +93,20 @@ class bnfDictionary:
         poem = self.generate(key, 1)
         poem = poem.replace(" ,",",")
         puncuation = [".",".",".",".","!","?"]
-        dontbreaks = ["of","behind","the","when","what","why","who",",","your","by","like","to","you","your","a","are","become"]
+        dontbreaks = ["of","behind","the","when","what","why","who",",","your","by","like","to","you","your","a","are","become","zbreak"]
         capitalize = False
         breaks = 0
         poem2 = []
         foundFirstBreak = False
         for word in poem.replace("\n","zbreak").split():
             poem2.append(word.lower())
-            if random.randint(1,100) < 7 and "zbreak" not in word and foundFirstBreak:
-                poem2.append("zbreak")
+            if random.randint(1,100) < 5 and "zbreak" not in word and foundFirstBreak:
+                isgood = True
+                for dontbreak in list(dontbreaks+puncuation):
+                    if dontbreak == word.lower():
+                        isgood = False
+                if isgood:
+                    poem2.append("zbreak")
             if "zbreak" in word:
                 foundFirstBreak = True
 
@@ -134,19 +140,24 @@ class bnfDictionary:
                     if isgood:
                         poem3.append(random.choice(puncuation))
                         capitalize = True
-        noPunc = True
-        for punc in list(set(puncuation)):
-            if punc in word:
-                noPunc = False
-        if noPunc:
-            poem3.append(random.choice(puncuation))
+        # noPunc = True
+        # for punc in list(set(puncuation)):
+        #     if punc in word:
+        #         noPunc = False
+        # if noPunc:
+        #     poem3.append(random.choice(puncuation))
 
+        print(poem3)
         newPoem = " ".join(poem3)
+
         newPoem = newPoem.replace(" a a"," an a")
+        newPoem = newPoem.replace("zbreak .",". zbreak")
+        newPoem = newPoem.replace("zbreak ?","? zbreak")
+        newPoem = newPoem.replace("zbreak !","! zbreak")
+        newPoem = newPoem.replace("zbreak ,",", zbreak")
         newPoem = newPoem.replace("zbreak","\n")
         newPoem = newPoem.replace(" \n \n","\n\n")
         newPoem = newPoem.replace("\n \n ","\n\n")
-        newPoem = newPoem.replace("\n\n",".\n\n")
         newPoem = newPoem.replace(" '","'")
         for punc in list(set(puncuation)):
             newPoem = newPoem.replace(" " + punc,punc)
