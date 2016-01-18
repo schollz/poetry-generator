@@ -1511,20 +1511,36 @@
   - value
   - enterprise
   - inspiration
+  - confidence
+  - trust
+  - research
+  - invention
+  - experiment
+  - market
+  - network
+  - calibration
 <theme-verb>:
   - perform
+  - experiment
+  - explore
+  - innovate
   - create
   - dedicate
   - innovate
   - grow
   - profit
   - succeed
+  - calibrate
+  - adjust
   - solve
   - value
   - narrow
   - support
   - expand
   - invent
+  - research
+  - trust
+  - confide
 <theme-adj>:
   - profitable
   - inspiried
@@ -1538,3 +1554,5 @@
   - marketable
   - narrow
   - succesful
+  - trusting
+  - confident

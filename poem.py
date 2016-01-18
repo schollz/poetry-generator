@@ -16,7 +16,7 @@ unzip linguistics.zip""")
 
 VERSION = "1.1"
 
-THEME_PROB = 20
+THEME_PROB = 12
 
 
 class bnfDictionary:
@@ -235,4 +235,4 @@ if __name__ == '__main__':
             filtered.append(line.strip())
         else:
             filtered.append("pause")
-    print(filtered)
+    print(p)
