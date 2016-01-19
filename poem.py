@@ -16,7 +16,7 @@ unzip linguistics.zip""")
 
 VERSION = "1.1"
 
-THEME_PROB = 12
+THEME_PROB = 0
 
 
 class bnfDictionary:
@@ -62,8 +62,10 @@ class bnfDictionary:
                     elif "noun" in word:
                         if "pnoun" in word or "mushy" in self.poemtype:
                             v = self.generate("<pnoun>", 1).strip()
-                        else:
+                        elif "nnoun" in word:
                             v = self.generate("<nnoun>", 1).strip()
+                        else:
+                            v = self.generate("<noun>", 1).strip()
                         if random.randint(1, 100) < THEME_PROB:
                             v = self.generate("<theme-noun>", 1).strip()
                         if "pl" in word:
@@ -216,7 +218,7 @@ class bnfDictionary:
         newPoem2 = newPoem2 + "</p>"
         return newPoem2,seed_str
 
-bnf = bnfDictionary('brain.yaml')
+bnf = bnfDictionary('test.yaml')
 
 
 def generate_poem(poemtype, hex_seed=None):
