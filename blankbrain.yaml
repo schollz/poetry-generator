@@ -1,0 +1,12 @@
+<poem>:
+  - <title> <p> <p> <stanza>  <stanza> <p>  <stanza>
+  - <title> <p> <p> <stanza>  <stanza>  <stanza>
+  - <title> <p> <p> <stanza>
+<stanza>:
+  - <stanzaLINE>
+<title>:
+  - blank brain
+<p>:
+  - newline
+<stanzaLINE>:
+  - enter a line at a time

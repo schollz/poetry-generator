@@ -12,6 +12,15 @@
   - <stanzaLINE>
   - <stanzaLINE>
 <stanzaLINE>:
+  - what we say <pverb-pr> to <p> <pverb> some other <person> <p> what a <noun> may teach .
+  - only <nadj> and to a <p> <person> they take on time , <randomnumber> years
+  - The <pnoun-pl> exists even when there is <p> <little> to say , and it ceases <p> <pprep> it in <nplace> .
+  - <pprep> the <pnoun> of the <place> where you sleep , <p> a dream <nverb-pr> into <noun-pl> .
+  - <nadj> weather , <nadj> lights like the <pnoun> .
+  - A chorus of <animal-pl> at <time> un <pverb-past> un <nverb-past> <p> comes to a halt before a <pnoun> .
+  - Our new <pnoun> , our <padj> <pnoun> <geometry-pl> .
+  - a <nadj> <noun> <nverb-pr> <p> even the <padj> <p> <adj> <place> in <noun> <p> to which the metaphor <p> will not be <pverb-past> .
+  - draw from it the <nadj> <p> <noun> of its own <noun> .
   - We get the <abstract> <p> they must lots to <pverb> <p> to each other <p> or perhaps nothing but <nnoun-pl> . <p> Perhaps they are not <nverb-past> .
   - Once there was a <nadj> <person> who <p> <pverb-past> at parties , sitting in a <geometry> , among <pnoun-pl> .
   - What <nverb-pr> the props of <pfeeling> ?
@@ -81,7 +90,8 @@
   - <pprep> the <nverb-inf> <nnoun-pl> .
   - return to the homeland of the <pnoun-pl> .
   - and <pnoun-pl> and <pnoun-pl> .
-  - of <padj> <food> , spirit <p> of the <pnoun-pl> , <p> <nverb-past> <person> blood, your kisses <p> <pverb> into exile <p> and a droplet of <ptexture> , with remnants of the sea . <p> <pverb> on the <nnoun-pl> that wait for you <p> <nverb-inf> the <nadj> chairs, <nverb-inf> the doors
+  - of <padj> <food> , spirit <p> of the <pnoun-pl> , <p> <nverb-past> <person> blood, your kisses <p> <pverb> into exile <p> and a droplet of <ptexture> , with remnants of the <place> .
+  - <p> <pverb> on the <nnoun-pl> that wait for you <p> <nverb-inf> the <nadj> chairs, <nverb-inf> the doors .
   - because I love you, love, <pprep> the <element> and <pprep> the <element> .
   - and <pprep> my hammock, during the <time> , I woke up naked <p> and full of <pfeeling> .
   - to the <padj> <padj> <pnoun>  <stanzaLINE>
@@ -210,6 +220,9 @@
   - One of them is <padj> , <p> the other knows <noun-pl> . <p> Where is <everybody> <p> <heshe> <says> , and when can we see what <p> is going to happen ?
   - Only <pnoun> , just the <p> <pnoun> , nothing but <p> it . <pnoun> .
   - In the first <scene> , the <padj> <person> <p> is <nverb-past> by a <person> . In the second <p> <scene> he returns, to <pverb> and to <pverb> .
+<little>:
+  - little
+  - lots
 <scene>:
   - reel
   - scene
@@ -234,6 +247,8 @@
   - twenty-seven
   - too many to count
   - too few to count
+  - thousand
+  - million
 <direction>:
   - west
   - east
@@ -399,7 +414,11 @@
   - animosity
   - positivity
   - functionality
+<nplace>:
+  - darkness
 <pnoun>:
+  - sun rise
+  - starlight
   - faucet
   - fellowship
   - umbrella
@@ -651,6 +670,8 @@
   - her
   - them
 <nverb>:
+  - fall
+  - silence
   - invade
   - deprive
   - disguise
@@ -745,6 +766,8 @@
   - lemon
   - banana
 <padj>:
+  - silent
+  - indespensable
   - natural
   - irreducable
   - aquatic
@@ -859,6 +882,11 @@
   - fresh
   - original
 <noun>:
+  - detail
+  - camera
+  - production
+  - sequence
+  - metaphor
   - inscription
   - projection
   - language
@@ -1046,7 +1074,10 @@
   - university
   - chimney
   - room
+  - sea
 <pprep>:
+  - behind
+  - outside
   - in front of
   - among
   - around
@@ -1068,12 +1099,16 @@
   - individual
   - minor
   - algorithmic
+  - aerial
   - side
   - overtone
   - historical
   - alphabetic
   - grammatic
 <nadj>:
+  - explosive
+  - bleak
+  - senile
   - dead
   - chaotic
   - wayside
@@ -1266,6 +1301,10 @@
   - bread
   - apple
 <pverb>:
+  - seek
+  - understand
+  - hear
+  - mix
   - chirp
   - reconcile
   - refresh
@@ -1352,6 +1391,7 @@
   - everything
   - something
 <animal>:
+  - toucan
   - turkey
   - jaguar
   - squirrel
@@ -1437,6 +1477,8 @@
   - line segment
   - loop
 <person>:
+  - person
+  - stranger
   - bride
   - mountaineer
   - gentleman
