@@ -45,12 +45,16 @@ Then open your browser to `localhost:8000` to see the poetry generator.
 
 # About the brain file
 
+Examples of the types of words:
+
 ```
 verb-pr = hopes
 verb-past = hoped
 verb = hope
 verb-inf = hoping
 ```
+
+Currently you only need to put in the infinitive form, and the other forms will be determined automaticlaly.
 
 # Deployment
 I wrote a deployment script for easy NGINX deployment (keep reading). This will install NGINX blocks, as well as a Linux `init.d` script to automatically start and stop gunicorn.
