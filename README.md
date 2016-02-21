@@ -33,12 +33,13 @@ Download and unzip the NodeBox linguistics package:
 ```bash
 wget https://www.nodebox.net/code/data/media/linguistics.zip
 unzip linguistics.zip
+mv en/* ./
 ```
 
 And then run using
 
 ```bash
-waitress-serve --port=8000 server:application
+waitress-serve --port=8000 poetrygenerator:application
 ```
 
 Then open your browser to `localhost:8000` to see the poetry generator.
