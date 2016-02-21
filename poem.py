@@ -113,7 +113,6 @@ class bnfDictionary:
         if key == "<mushypoem>":
             key = "<poem>"
         poem = self.generate(key, 1)
-        print(poem)
         poem = poem.replace(" ,", ",")
         puncuation = [".", ".", ".", ".", "!", "?"]
         dontbreaks = ["of", "behind", "the", "when", "what", "why", "who", ",",
@@ -171,7 +170,6 @@ class bnfDictionary:
         # if noPunc:
         #     poem3.append(random.choice(puncuation))
 
-        print(poem3)
         newPoem = " ".join(poem3)
 
         newPoem = newPoem.replace(" a a", " an a")
