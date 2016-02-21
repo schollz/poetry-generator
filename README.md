@@ -31,7 +31,6 @@ Download and unzip the NodeBox linguistics package:
 ```bash
 wget https://www.nodebox.net/code/data/media/linguistics.zip
 unzip linguistics.zip
-mv en/* ./
 ```
 
 And then run using
