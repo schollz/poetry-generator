@@ -6,6 +6,14 @@ All the syntax and word choices are in the `brain.yaml` file (more info about th
 
 Try the [demo here](http://www.poetrygenerator.ninja).
 
+# Docker
+
+```
+$ docker run -p 8000:8000 schollz/poetry-generator
+```
+
+Now open your browser to localhost:8000!
+
 ### Changes in new version
  - Use YAML
  - Reverted to Python2 (to use Nodebox Linguistics)
